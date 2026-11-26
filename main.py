@@ -48,6 +48,11 @@ def main() -> None:
     with open(path, "w", encoding="utf-8") as handle:
         handle.write(ENTRY)
     os.chmod(path, 0o644)
+    # Read-back guard: prove the file on disk is byte-for-byte the entry.
+    with open(path, "rb") as handle:
+        written = handle.read()
+    if written != ENTRY.encode("utf-8"):
+        raise ValueError("entry file contents do not match the entry text")
 
 
 if __name__ == "__main__":
